@@ -1,4 +1,4 @@
-
+//화면을 그릴 때 사용
 #include "stdafx.h"
 #include "SoftRenderer.h"
 #include "GDIHelper.h"
