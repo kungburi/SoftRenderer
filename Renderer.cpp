@@ -39,26 +39,42 @@ void UpdateFrame(void)
 
 	// Draw
 	//SetColor(255, 0, 0);
-	SetColor(0, 255, 0);	//´«ÀÌ ³Ê¹« ¾ÆÇÁ´Ù..
+	SetColor(255, 255, 255);	//´«ÀÌ ³Ê¹« ¾ÆÇÁ´Ù..
 	//PutPixel(0, 0);	//ÇÈ¼¿¿¡ Á¡Âï±á
 
 	// Draw Circle with radius 100
-	Vector2 center(0.0f, 0.0f);
+	Vector3 center(0.0f, 0.0f);
 	float radius = 100.0f;
-	float nradius = (int)radius;
+	int nradius = (int)radius;
 
 	static float degree = 0;
-	degree += 0.1f;
+	degree += 1;
 	degree = fmodf(degree, 360.0f);
 
-	Matrix2 rotMat;
+	Matrix3 rotMat;
 	rotMat.SetRotation(degree);
+	rotMat.Transpose();
 
-	for (int i = -nradius; i < nradius; i++)
+	float maxScale = 1;
+	float scale = ((sinf(Deg2Rad(degree * 2)) + 1) * 0.5) * maxScale;
+	if (scale < 0.5f) scale = 0.5f;
+
+	Matrix3 scaleMat;
+	scaleMat.SetScale(scale, scale, scale);
+
+	float maxPos = 150;
+	float pos = sinf(Deg2Rad(degree)) * maxPos;
+	Matrix3 translationMat;
+	translationMat.SetTranslation(pos, pos);
+
+	Matrix3 SR = scaleMat * rotMat;
+	Matrix3 TRS = translationMat * rotMat * scaleMat;
+
+	for (int i = -nradius; i <= nradius; i++)
 	{
-		for (int j = -nradius; j < nradius; j++)
+		for (int j = -nradius; j <= nradius; j++)
 		{
-			PutPixel(Vector2(i, j) * rotMat);
+			PutPixel(Vector3((float)i, (float)j) * TRS);
 		}
 	}
 
@@ -80,6 +96,26 @@ void UpdateFrame(void)
 	//Matrix2 RSMat = RotMat * ScaleMat;
 
 	//-x~x
+	/*
+	Vector2 center(0.0f, 0.0f);
+	float radius = 100.0f;
+	float nradius = (int)radius;
+
+	static float degree = 0;
+	degree += 0.1f;
+	degree = fmodf(degree, 360.0f);
+
+	Matrix2 rotMat;
+	rotMat.SetRotation(degree);
+
+	for (int i = -nradius; i < nradius; i++)
+	{
+		for (int j = -nradius; j < nradius; j++)
+		{
+			PutPixel(Vector2(i, j) * rotMat);
+		}
+	}
+	*/
 	/*for (int i = -nradius; i <= nradius; i++)
 	{
 		for (int j = -nradius; j <= nradius; j++)
